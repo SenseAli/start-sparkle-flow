@@ -14,7 +14,113 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      audit_log: {
+        Row: {
+          cart_snapshot: Json
+          created_at: string
+          event: string
+          final_action: Json | null
+          gate_result: Json | null
+          id: string
+          mode: string
+          order_id: string | null
+          proposed_action: Json | null
+          rationale: string | null
+          session_id: string
+        }
+        Insert: {
+          cart_snapshot: Json
+          created_at?: string
+          event: string
+          final_action?: Json | null
+          gate_result?: Json | null
+          id?: string
+          mode?: string
+          order_id?: string | null
+          proposed_action?: Json | null
+          rationale?: string | null
+          session_id: string
+        }
+        Update: {
+          cart_snapshot?: Json
+          created_at?: string
+          event?: string
+          final_action?: Json | null
+          gate_result?: Json | null
+          id?: string
+          mode?: string
+          order_id?: string | null
+          proposed_action?: Json | null
+          rationale?: string | null
+          session_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "audit_log_session_id_fkey"
+            columns: ["session_id"]
+            isOneToOne: false
+            referencedRelation: "sessions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      catalog: {
+        Row: {
+          category: string
+          cost_inr: number
+          cross_sell_eligible: boolean
+          id: string
+          name: string
+          pairs_with: string[] | null
+          price_inr: number
+          sku: string
+          upsell_eligible: boolean
+        }
+        Insert: {
+          category: string
+          cost_inr: number
+          cross_sell_eligible?: boolean
+          id?: string
+          name: string
+          pairs_with?: string[] | null
+          price_inr: number
+          sku: string
+          upsell_eligible?: boolean
+        }
+        Update: {
+          category?: string
+          cost_inr?: number
+          cross_sell_eligible?: boolean
+          id?: string
+          name?: string
+          pairs_with?: string[] | null
+          price_inr?: number
+          sku?: string
+          upsell_eligible?: boolean
+        }
+        Relationships: []
+      }
+      sessions: {
+        Row: {
+          cart: Json
+          created_at: string
+          id: string
+          status: string
+        }
+        Insert: {
+          cart: Json
+          created_at?: string
+          id?: string
+          status?: string
+        }
+        Update: {
+          cart?: Json
+          created_at?: string
+          id?: string
+          status?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
