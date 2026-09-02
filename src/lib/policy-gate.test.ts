@@ -64,8 +64,8 @@ describe("Policy Gate", () => {
     expect(d.approved).toBe(true);
     expect(Object.isFrozen(d.offer)).toBe(true);
     expect(() => {
-      // @ts-expect-error deliberate mutation attempt
-      d.offer!.discountPct = 85;
+      const mutable = d.offer as unknown as { discountPct: number };
+      mutable.discountPct = 85;
     }).toThrow();
     expect(d.offer!.finalPriceInr).toBe(3149.1); // unchanged after mutation attempt
   });
