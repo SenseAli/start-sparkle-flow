@@ -33,11 +33,13 @@ function heuristicFallback(cart: CartItem[], eligible: CatalogProduct[]): AgentC
   const pick = candidates[0];
   if (!pick) return null;
   const marginRoom = ((pick.priceInr - pick.costInr) / pick.priceInr) * 100;
-  const discountPct = Math.max(0, Math.min(10, Math.floor(marginRoom - 16)));
+  // Respect both the % cap and the ₹2,000 absolute cap so the heuristic passes the gate.
+  const absCapPct = Math.floor((2000 / pick.priceInr) * 100);
+  const discountPct = Math.max(0, Math.min(10, absCapPct, Math.floor(marginRoom - 16)));
   return {
     sku: pick.sku,
     discountPct,
-    rationale: `Heuristic fallback: ${pick.name} has the highest absolute margin among eligible cross-sells not already in the cart, leaving room for a ${discountPct}% discount while staying above the margin floor.`,
+    rationale: `Heuristic fallback: ${pick.name} has the highest absolute margin among eligible cross-sells not already in the cart, leaving room for a ${discountPct}% discount while staying above the margin floor and the ₹2,000 discount cap.`,
   };
 }
 
