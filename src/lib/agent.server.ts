@@ -22,7 +22,6 @@ const candidateSchema = z.object({
   sku: z.string(),
   discountPct: z.number(),
   rationale: z.string(),
-  offerType: z.enum(["upsell", "cross_sell"]),
 });
 
 function heuristicFallback(cart: CartItem[], eligible: CatalogProduct[]): AgentCandidate | null {
