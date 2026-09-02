@@ -72,8 +72,9 @@ ${poolDesc}
 Propose one offer with a discount percentage between 0 and 15 that keeps the product profitable. Explain your reasoning in 1-2 sentences referencing the cart contents and margin. Return structured fields only; do not compute final prices.`,
       });
       if (output && pool.some((p) => p.sku === output.sku)) {
+        const discountPct = Math.max(0, Math.min(15, Math.round(output.discountPct)));
         return {
-          candidate: { sku: output.sku, discountPct: output.discountPct, rationale: output.rationale },
+          candidate: { sku: output.sku, discountPct, rationale: output.rationale },
           source: "llm",
         };
       }
