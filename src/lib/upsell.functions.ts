@@ -85,13 +85,18 @@ export const submitCart = createServerFn({ method: "POST" })
     const eligible = catalog.filter((p) => p.crossSellEligible);
     const { candidate, source } = await proposeOffer(cart, eligible);
 
-    let decision = null;
-    let finalAction: Record<string, unknown> = { type: "no_offer", reason: "no candidate" };
+    type FinalAction =
+      | { type: "offer"; offer: NonNullable<typeof decision>["offer"] }
+      | { type: "no_offer"; reason: string; fallback?: string };
+
+    let decision: ReturnType<typeof checkOffer> | null = null;
+    let finalAction: FinalAction = { type: "no_offer", reason: "no candidate" };
     if (candidate) {
       decision = checkOffer(candidate, bySku.get(candidate.sku), alreadyOffered, DEFAULT_POLICY);
-      finalAction = decision.approved
-        ? { type: "offer", offer: decision.offer }
-        : { type: "no_offer", reason: decision.rejectReasons.join("; "), fallback: "rejected candidate never shown to shopper" };
+      finalAction =
+        decision.approved && decision.offer
+          ? { type: "offer", offer: decision.offer }
+          : { type: "no_offer", reason: decision.rejectReasons.join("; "), fallback: "rejected candidate never shown to shopper" };
     }
 
     const { data: auditRow, error: aErr } = await supabase
